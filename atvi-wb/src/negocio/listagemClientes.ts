@@ -13,7 +13,7 @@ export default class ListagemClientes extends Listagem {
             console.log(`Nome: ` + cliente.nome);
             console.log(`Nome social: ` + cliente.nomeSocial);
             console.log(`CPF: ` + cliente.getCpf.getValor);
-            console.log(`--------------------------------------📍`);
+            console.log(`--------------------------------------`);
         });
         console.log(`\n`);
     }
@@ -24,7 +24,7 @@ export default class ListagemClientes extends Listagem {
             console.log(`Nome: ` + cliente.nome);
             console.log(`Nome social: ` + cliente.nomeSocial);
             console.log(`CPF: ` + cliente.getCpf.getValor);
-            console.log(`--------------------------------------📍`);
+            console.log(`--------------------------------------`);
         });
         console.log(`\n`);
     }
@@ -35,7 +35,7 @@ export default class ListagemClientes extends Listagem {
             console.log(`Nome: ` + cliente.nome);
             console.log(`Nome social: ` + cliente.nomeSocial);
             console.log(`CPF: ` + cliente.getCpf.getValor);
-            console.log(`--------------------------------------📍`);
+            console.log(`--------------------------------------`);
         });
         console.log(`\n`);
     }
@@ -50,7 +50,7 @@ export default class ListagemClientes extends Listagem {
             const cliente = clientesOrdenados[i];
             console.log(`Nome: ${cliente.nome}`);
             console.log(`Valor Total Consumido: ${cliente.getValorTotalConsumido()}`);
-            console.log(`--------------------------------------📍`);
+            console.log(`--------------------------------------`);
         }
         console.log(`\n`);
     }
@@ -87,7 +87,7 @@ export default class ListagemClientes extends Listagem {
         }
     
         const itensOrdenados = Array.from(itensMaisConsumidos.entries()).sort((a, b) => b[1] - a[1]);    
-        console.log(`\nItens mais consumidos pelo gênero ${genero}: ⭐`);
+        console.log(`\nItens mais consumidos pelo gênero ${genero}: `);
         console.log("-------------------------------");
         console.log("Item\t\tQuantidade");
         console.log("-------------------------------");
@@ -106,7 +106,7 @@ export default class ListagemClientes extends Listagem {
         );
 
         console.log("\nTop 5 clientes menos consumidores:");
-        console.log("----------------------------------📍");
+        console.log("----------------------------------");
         console.log("Cliente\t\t\tQuantidade Consumida");
         console.log("----------------------------------");
         for (let i = 0; i < Math.min(clientesOrdenados.length, 5); i++) {
@@ -114,6 +114,6 @@ export default class ListagemClientes extends Listagem {
             const totalConsumido = cliente.getProdutosConsumidos.length + cliente.getServicosConsumidos.length;
             console.log(`${cliente.nome}\t\t\t${totalConsumido}`);
         }
-        console.log("----------------------------------📍\n");
+        console.log("----------------------------------\n");
     }
 }
