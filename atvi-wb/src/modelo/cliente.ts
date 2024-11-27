@@ -6,45 +6,28 @@ import Telefone from "./telefone"
 
 export default class Cliente {
     public nome: string
-    public genero: string
     public nomeSocial: string
     private cpf: CPF
+    public genero: string
     private rgs: Array<RG>
     private dataCadastro: Date
     private telefones: Array<Telefone>
-    private produtosConsumidos: Array<Produto>
-    private servicosConsumidos: Array<Servico>
-    private valorTotalConsumido: number = 0;
-
+    public produtosConsumidos: Array<Produto>
+    public servicosConsumidos: Array<Servico>
     constructor(nome: string, nomeSocial: string, cpf: CPF, genero: string) {
         this.nome = nome
-        this.genero = genero
         this.nomeSocial = nomeSocial
         this.cpf = cpf
+        this.genero = genero
         this.rgs = []
         this.dataCadastro = new Date()
         this.telefones = []
         this.produtosConsumidos = []
         this.servicosConsumidos = []
-        this.valorTotalConsumido = 0
     }
-
-    public adicionarProdutoConsumido(produto: Produto): void {
-        this.produtosConsumidos.push(produto);
-        this.valorTotalConsumido += produto.valor;
-    }
-
-    public adicionarServicoConsumido(servico: Servico): void {
-        this.servicosConsumidos.push(servico);
-        this.valorTotalConsumido += servico.valor;
-    }
-
 
     public get getCpf(): CPF {
         return this.cpf
-    }
-    public get getGenreo(): string {
-        return this.genero
     }
     public get getRgs(): Array<RG> {
         return this.rgs
@@ -61,37 +44,39 @@ export default class Cliente {
     public get getServicosConsumidos(): Array<Servico> {
         return this.servicosConsumidos
     }
-    public getValorTotalConsumido(): number {
-        return this.valorTotalConsumido;
+    public getGenero(): string {
+        return this.genero;
+    }
+    public addRg(rg: RG){
+        this.rgs.push(rg)
     }
 
+    public addTelefones(telefone: Telefone) {
+        this.telefones.push(telefone);
+    }
 
-    public contarItensConsumidosPorGenero(genero: string): Map<string, number> {
-        const itensConsumidosPorGenero = new Map<string, number>();
-    
-        
-        const itensPorGeneroM = genero === "M" ? this.produtosConsumidos : this.servicosConsumidos;
-        const itensPorGeneroF = genero === "F" ? this.produtosConsumidos : this.servicosConsumidos;
+    public addProduto(produto: Produto){
+        this.produtosConsumidos.push(produto)
+        produto.addConsumo()
+    }
 
-    
-        
-        for (const item of itensPorGeneroM) {
-            const nomeItem = item.nome;
-            if (itensConsumidosPorGenero.has(nomeItem)) {
-                itensConsumidosPorGenero.set(nomeItem, itensConsumidosPorGenero.get(nomeItem)! + 1);
-            } else {
-                itensConsumidosPorGenero.set(nomeItem, 1);
-            }
+    public addServico(servico: Servico){
+        this.servicosConsumidos.push(servico)
+        servico.addConsumo()
+    }
+
+    public setGenero(): string{
+        switch(this.genero){
+            case 'Masculino':
+                return 'M - Masculino'
+            case 'Feminino': 
+                return 'F - Feminino'
+            default:
+                return 'Indefinido'
         }
-        
-        for (const item of itensPorGeneroF) {
-            const nomeItem = item.nome;
-            if (itensConsumidosPorGenero.has(nomeItem)) {
-                itensConsumidosPorGenero.set(nomeItem, itensConsumidosPorGenero.get(nomeItem)! + 1);
-            } else {
-                itensConsumidosPorGenero.set(nomeItem, 1);
-            }
-        }
-        return itensConsumidosPorGenero;        
+    }
+
+    public getGeneroMF(): string{
+        return this.genero
     }
 }

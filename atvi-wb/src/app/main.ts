@@ -1,149 +1,204 @@
 import Entrada from "../io/entrada";
 import Empresa from "../modelo/empresa"
-import CadastroCliente from "../negocio/cadastroCliente";
-import CadastroProduto from "../negocio/cadastroProduto";
-import CadastroServico from "../negocio/cadastroServico";
-import ListagemClientes from "../negocio/listagemClientes";
-import ListagemProdutos from "../negocio/listagemProdutos";
-import ListagemServicos from "../negocio/ListagemServiços";
+import Cliente from "../modelo/cliente";
+import Produto from "../modelo/produto";
+import Servico from "../modelo/servico";
+import CadastroCliente from "../negocio/cliente/cadastroCliente";
+import CadastroProduto from "../negocio/produto/cadastroProduto";
+import CadastroServicos from "../negocio/serviço/cadastroServiço";
+import ListagemClientes from "../negocio/cliente/listagemClientes";
+import ListagemProdutos from "../negocio/produto/listagemProdutos";
+import ListagemServicos from "../negocio/serviço/listagemServiços";
+import AtualizarCliente from "../negocio/cliente/atualizarCliente";
+import AtualizarProduto from "../negocio/produto/atualizarProduto";
+import AtualizarServiço from "../negocio/serviço/atualizarServiço";
+import ApagarCliente from "../negocio/cliente/deletarCliente";
+import ApagarProduto from "../negocio/produto/deletarProduto";
+import ApagarServiço from "../negocio/serviço/deletarServiço";
+import ClientesMaisConsumo from "../negocio/listagem/consumoMais";
+import ClientesMenosConsumo from "../negocio/listagem/consumoMenos";
+import ClientesValor from "../negocio/listagem/valorClientes";
+import ClientesPorGenero from "../negocio/listagem/clientesGen";
+import MaisConsumidosGenero from "../negocio/listagem/consumoMaisGen";
+import ProdutosMaisConsumidos from "../negocio/listagem/prodConsumo";
+import CPF from "../modelo/cpf";
+import RG from "../modelo/rg";
+import Telefone from "../modelo/telefone";
 
-console.log(`Bem-vindo ao cadastro de clientes do Grupo World Beauty`)
-let empresa = new Empresa()
-let execucao = true
+console.log(`Bem-vindo ao cadastro de clientes do Grupo World Beauty`);
+let empresa = new Empresa();
+let execucao = true;
+
+
+for (let i = 1; i <= 20; i++) {
+    empresa.getProdutos.push(new Produto(`Produto ${i}`, Math.random() * 10));
+}
+
+for (let i = 1; i <= 20; i++) {
+    empresa.getServicos.push(new Servico(`Serviço ${i}`, Math.random() * 10));
+}
+
+for (let i = 1; i <= 30; i++) {
+    let cpf = new CPF(
+        (Math.floor(10000000000 + Math.random() * 90000000000)).toString(),
+        new Date()
+    );
+    let rg = new RG(
+        (Math.floor(100000000 + Math.random() * 900000000)).toString(),
+        new Date()
+    );
+    let telefone = new Telefone(
+        `12`,
+        `${Math.floor(90000 + Math.random() * 10000)}-${Math.floor(1000 + Math.random() * 9000)}`
+    );
+
+    let numProdutosConsumidos = Math.floor(Math.random() * empresa.getProdutos.length) + 1;
+    let produtosConsumidos = shuffleArray(empresa.getProdutos).slice(0, numProdutosConsumidos);
+
+    let numServicosConsumidos = Math.min(Math.floor(Math.random() * 5) + 1, empresa.getServicos.length);
+    let servicosConsumidos = shuffleArray(empresa.getServicos).slice(0, numServicosConsumidos);
+
+    let genero = i % 2 === 0 ? 'Masculino' : 'Feminino';
+
+    let cliente = new Cliente(
+        `Cliente ${i}`,
+        `Nome Social ${i}`,
+        cpf,
+        genero
+    );
+
+    cliente.addRg(rg);
+    cliente.addTelefones(telefone);
+
+    produtosConsumidos.forEach(produto => {
+        let numConsumos = Math.floor(Math.random()) + 1;
+        for (let j = 0; j < numConsumos; j++) {
+            cliente.addProduto(produto);
+        }
+    });
+
+    servicosConsumidos.forEach(servico => {
+        let numConsumos = Math.floor(Math.random()) + 1; 
+        for (let j = 0; j < numConsumos; j++) {
+            cliente.addServico(servico);
+        }
+    });
+
+    empresa.getClientes.push(cliente);
+}
+
+function shuffleArray<T>(array: T[]): T[] {
+    return array
+        .map(value => ({ value, sort: Math.random() }))
+        .sort((a, b) => a.sort - b.sort)
+        .map(({ value }) => value);
+}
+
+
+
 
 while (execucao) {
-    console.log(`\nOpções:`);
+    console.log(`Opções:`);
     console.log(`1 - Cadastrar cliente`);
     console.log(`2 - Listar todos os clientes`);
-    console.log("3 - Listar todos os clientes masculinos");
-    console.log("4 - Listar todos os clientes femininos");
-    console.log("5 - Cadastrar produto");
-    console.log("6 - Cadastrar serviço");
-    console.log("7 - registrar compra/consumo de produto do cliente"); 
-    console.log("8 - Listar todos os produtos e serviços"); 
-    console.log("9 - Listar serviços e produtos mais consumidos por gênero"); 
-    console.log("10 - Clientes com menos consumo em quantidade"); 
-    console.log("11 - Clientes com mais consumo em valor"); 
-    console.log("12 - Produtos e Serviços mais consumidos");
-
-    console.log(`0 - Sair`);
+    console.log(`3 - Atualizar cliente `);
+    console.log(`4 - Deletar cliente `);
+    console.log(`5 - Cadastrar produto `);
+    console.log(`6 - Listar todos os produtos `);
+    console.log(`7 - Atualizar produto `);
+    console.log(`8 - Deletar cliente `);
+    console.log(`9 - Cadastrar serviço `);
+    console.log(`10 - Listar todos os serviços `);
+    console.log(`11 - Atualizar serviço `);
+    console.log(`12 - Deletar serviço `);
+    console.log(`13 - Clientes que mais consumiram `);
+    console.log(`14 - Clientes que menos consumiram `);
+    console.log(`15 - Clientes que mais consumiram (em valor) `);
+    console.log(`16 - Clientes por gênero `);
+    console.log(`17 - Produtos mais consumidos por gênero `);
+    console.log(`18 - Produtos mais consumidos `);
+    console.log(`19 - Sair `);
 
     let entrada = new Entrada()
     let opcao = entrada.receberNumero(`Por favor, escolha uma opção: `)
 
     switch (opcao) {
         case 1:
-            let cadastro = new CadastroCliente(empresa.getClientes)
-            cadastro.cadastrar()
+            let cadastroCliente = new CadastroCliente(empresa.getClientes)
+            cadastroCliente.cadastrar()
             break;
-            
         case 2:
-            let listagem = new ListagemClientes(empresa.getClientes)
-            listagem.listar()
+            let listagemCliente = new ListagemClientes(empresa.getClientes)
+            listagemCliente.listar()
             break;
-
         case 3:
-            let listagemGeneroMasculino = new ListagemClientes(empresa.getClientes);
-            listagemGeneroMasculino.listarGeneroMasculino();
+            let updateCliente = new AtualizarCliente(empresa.getClientes)
+            updateCliente.atualizar()
             break;
-
-        case 4:
-            let listagemGeneroFeminino = new ListagemClientes(empresa.getClientes);
-            listagemGeneroFeminino.listarGeneroFeminino();
-            break;
-
+        case 4: 
+            let deleteCliente = new ApagarCliente(empresa.getClientes)
+            deleteCliente.deletar()
         case 5:
             let cadastroProduto = new CadastroProduto(empresa.getProdutos)
             cadastroProduto.cadastrar()
             break;
         case 6:
-            let cadastrarServico = new CadastroServico(empresa.getServicos)
-            cadastrarServico.cadastrar()
+            let ListagemProduto = new ListagemProdutos(empresa.getProdutos)
+            ListagemProduto.listar()
             break;
-
         case 7:
-            let cpfCliente = entrada.receberTexto(`Digite o CPF do cliente: `);
-            let clienteSelecionado = empresa.getClientes.find(cliente => cliente.getCpf.getValor === cpfCliente);
-
-            if (clienteSelecionado) {
-                let produtoConsumido = entrada.receberTexto(`Digite o produto consumido: `);
-                let produtoSelecionado = empresa.getProdutos.find(produto => produto.getNome === produtoConsumido);
-
-                if (produtoSelecionado) {
-                    clienteSelecionado.adicionarProdutoConsumido(produtoSelecionado);
-                    produtoSelecionado.adicionarConsumo();
-                    console.log(`Quantidade consumida do produto ${produtoSelecionado.getNome}: ${produtoSelecionado.getQuantidadeConsumida}`);
-                    console.log("Compra/consumo registrada com sucesso! ");
-                    console.log("------------------------------------------\n")
-                } else {
-                    console.log("Produto não encontrado.\n");
-                }
-            }
-            else {
-                console.log("Cliente não encontrado.");
-            }
+            let updateProduto = new AtualizarProduto(empresa.getProdutos)
+            updateProduto.atualizar()
             break;
-        case 100:
-            let cpfClienteServico = entrada.receberTexto(`Digite o CPF do cliente: `);
-            let clienteSelecionadoServico = empresa.getClientes.find(cliente => cliente.getCpf.getValor === cpfClienteServico);
-
-            if (clienteSelecionadoServico) {
-                let servicoConsumido = entrada.receberTexto(`Digite o serviço consumido: `);
-                let servicoSelecionado = empresa.getServicos.find(servico => servico.getNome === servicoConsumido);
-
-                if (servicoSelecionado) {
-                    clienteSelecionadoServico.adicionarServicoConsumido(servicoSelecionado);
-                    servicoSelecionado.adicionarConsumo();
-                    console.log(`Quantidade consumida do servico ${servicoSelecionado.getNome}: ${servicoSelecionado.getQuantidadeConsumida}`);
-                    console.log("Compra/consumo registrada com sucesso!");
-                    console.log("------------------------------------------\n")
-                } else {
-                    console.log("Serviço não encontrado.\n");
-                }
-            }
-            else {
-                console.log("Cliente não encontrado.");
-            }
-            break;
-
         case 8:
-            let ListaProdutos = new ListagemProdutos(empresa.getProdutos); 
-            ListaProdutos.listar();
-
-            let ListaServicos = new ListagemServicos(empresa.getServicos);
-            ListaServicos.listar();
+            let deleteProduto = new ApagarProduto(empresa.getProdutos)
+            deleteProduto.deletar()
             break;
-            
         case 9:
-            const listagemConsumoGenero = new ListagemClientes(empresa.getClientes);
-            listagemConsumoGenero.listarItensMaisConsumidosPorGenero("M");
-            listagemConsumoGenero.listarItensMaisConsumidosPorGenero("F");
+            let cadastroServiço = new CadastroServicos(empresa.getServicos)
+            cadastroServiço.cadastrar()
             break;
-                
         case 10:
-            let listagemMenosConsumidores = new ListagemClientes(empresa.getClientes);
-            listagemMenosConsumidores.listarTop5ClientesMenosConsumidores();
+            let listagemServico = new ListagemServicos(empresa.getServicos)
+            listagemServico.listar()
             break;
-
         case 11:
-            const listagemClientes = new ListagemClientes(empresa.getClientes);
-            listagemClientes.listarTop5ClientesPorValor();
-        break;
-
-        case 12:
-            let MaisConsumido = new ListagemProdutos(empresa.getProdutos);
-            MaisConsumido.listarProdutosMaisConsumidos();
-
-            let MaisConsumidoServico = new ListagemServicos(empresa.getServicos);
-            MaisConsumidoServico.listarServicosMaisConsumidos();
+            let updateServico = new AtualizarServiço(empresa.getServicos)
+            updateServico.atualizar()
             break;
-        
-
-        case 0:
+        case 12:
+            let deleteServiço = new ApagarServiço(empresa.getServicos)
+            deleteServiço.deletar()
+            break;
+        case 13:
+            let maisConsumo = new ClientesMaisConsumo(empresa.getClientes)
+            maisConsumo.listar()
+            break;
+        case 14:
+            let menosConsumo = new ClientesMenosConsumo(empresa.getClientes)
+            menosConsumo.listar()
+            break;
+        case 15:
+            let valor = new ClientesValor(empresa.getClientes, empresa.getProdutos)
+            valor.listar()
+            break;
+        case 16:
+            let clientesGenero = new ClientesPorGenero(empresa.getClientes)
+            clientesGenero.listar()
+            break;
+        case 17:
+            let consumoGenero = new MaisConsumidosGenero(empresa.getClientes, empresa.getProdutos, empresa.getServicos)
+            consumoGenero.listar()
+            break;
+        case 18:
+            let consumoProduto = new ProdutosMaisConsumidos(empresa.getClientes, empresa.getProdutos)
+            consumoProduto.listar()
+            break;
+        case 19:
             execucao = false
-            console.log(`Até mais`)
+            console.log(`Até mais.`)
             break;
         default:
-            console.log(`Operação não entendida`)
+            console.log(`Operação não disponível ou não existente.`)
     }
 }

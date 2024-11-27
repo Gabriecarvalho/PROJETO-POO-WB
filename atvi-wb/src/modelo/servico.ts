@@ -1,24 +1,19 @@
 export default class Servico {
-    public nome!: string;
-    public valor: number;
-    public quantidadeConsumida: number;
-    constructor(nome: string, valor: number, quantidadeConsumida: number) {
+    public nome: string
+    public preco: number
+    public consumo : number
+    constructor(nome: string, preco: number){
         this.nome = nome
-        this.valor = valor
-        this.quantidadeConsumida = 0
+        this.preco = preco
+        this.consumo = 0
     }
-    public get getNome(): string {
+    getNomeS(): string{
         return this.nome
     }
-    public get getValor(): number {
-        return this.valor
+    getPrecos(): number{
+        return this.preco
     }
-
-    public get getQuantidadeConsumida(): number {
-        return this.quantidadeConsumida;
-    }
-
-    public adicionarConsumo(): void {
-        this.quantidadeConsumida++;
+    public addConsumo(){
+        this.consumo += 1
     }
 }
